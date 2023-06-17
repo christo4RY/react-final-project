@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 const initialState = {
   user: null,
@@ -17,9 +18,10 @@ export const authSlice = createSlice({
       }
     },
     getAuth: (state) => {
+      const user = JSON.parse(Cookies.get("user"));
+      const token = JSON.parse(Cookies.get("token"));
       {
-        (state.user = JSON.parse(Cookies.get("user"))),
-          (state.token = JSON.parse(Cookies.get("token")));
+        (state.user = user), (state.token = token);
       }
     },
     removeAuth: (state) => {

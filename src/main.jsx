@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import { Provider } from 'react-redux'
 import { store } from './store/services/store'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <>

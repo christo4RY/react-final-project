@@ -5,6 +5,8 @@ import SignUp from "../pages/auth/SignUp";
 import SignIn from "../pages/auth/SignIn";
 import Dashboard from "../pages/Dashboard";
 import RouteGuard from "../components/RouteGuard";
+import Index from "../pages/Contacts/Index";
+import Show from "../pages/Contacts/Show";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -16,7 +18,10 @@ export const router = createBrowserRouter(
             </Route>
             <Route path="/dashboard" element={<RouteGuard>
                 <Dashboard/>
-            </RouteGuard>}></Route>
+            </RouteGuard>}>
+                <Route index element={<Index/>}/>
+                <Route path="contact/:id" element={<Show/>}/>
+            </Route>
         </Route>
     )
 )
