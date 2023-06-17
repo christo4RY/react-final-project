@@ -96,7 +96,7 @@ const Index = () => {
   };
 
   return (
-    <div className="mt-7 p-3 shadow-lg w-[95%] mx-auto">
+    <div className="mt-7 p-3 shadow-lg w-full  sm:w-[95%] mx-auto">
       <Modal opened={opened} onClose={close} title="Create Contact" centered>
         <form className=" flex flex-col" onSubmit={handleSubmit(submit)}>
           <div className=" grid grid-cols-2 space-x-3">
@@ -147,7 +147,8 @@ const Index = () => {
           Create
         </button>
       </div>
-      <Table>
+      <div className="w-full overflow-x-scroll">
+      <Table >
         <thead>
           <tr>
             <th>Name</th>
@@ -159,6 +160,7 @@ const Index = () => {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      </div>
       {isLoading && <Skeleton className="w-full" height={37} count={7} />}
     </div>
   );

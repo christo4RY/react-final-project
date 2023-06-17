@@ -17,7 +17,7 @@ const Show = () => {
     id,
   });
   return (
-    <div className="w-[40%] shadow-lg p-7 mt-7 mx-auto">
+    <div className="w-[80%] sm:w-[60%] md:w-[40%] shadow-lg p-7 mt-7 mx-auto">
       {isLoading && (
         <div>
           <SkeletonTheme baseColor="#e2e8f0" highlightColor="#a3ffc6">
