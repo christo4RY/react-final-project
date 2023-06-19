@@ -13,12 +13,15 @@ import { Modal, Group, Button } from "@mantine/core";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
+import { BiDotsVerticalRounded, BiEditAlt } from "react-icons/bi";
+import { FaTrash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputError from "../../components/errors/InputError";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import { Menu, Text } from "@mantine/core";
 
 const schema = yup
   .object({
@@ -36,7 +39,7 @@ const Index = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema)
   });
   const dispatch = useDispatch();
   useEffect(() => {
@@ -52,34 +55,61 @@ const Index = () => {
 
   const rows = data?.contacts?.data.map((contact) => (
     <tr key={contact.id}>
-      <td >
-        <Link to={`contact/${contact.id}`} className="text-teal-700 bg-teal-100/60 px-2 py-0.5 rounded">{contact.name}</Link>
+      <td>
+        <Link
+          to={`contact/${contact.id}`}
+          className="text-teal-700 bg-teal-100/60 px-2 py-0.5 rounded"
+        >
+          {contact.name}
+        </Link>
       </td>
       <td>{contact.phone ?? "-"}</td>
       <td>{contact.email ?? "-"}</td>
       <td>{contact.address ?? "-"}</td>
-      <td>
-        <button
-          onClick={async () => {
-            Swal.fire({
-              title: "Are you sure?",
-              text: "You won't be able to revert this!",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes, delete it!",
-            }).then(async (result) => {
-              if (result.isConfirmed) {
-                await deleteContact({ token: auth.token, id: contact.id });
-                Swal.fire("Deleted!", "Your file has been deleted.", "success");
-              }
-            });
-          }}
-          className=" py-0.5 text-sm px-2.5 bg-red-100/60 text-red-500 rounded"
-        >
-          Delete
-        </button>
+      <td >
+        <Menu shadow="md" width={120}>
+          <Menu.Target>
+            <button>
+              <BiDotsVerticalRounded />
+            </button>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Label>Actions</Menu.Label>
+            <Menu.Item color="yellow" icon={<BiEditAlt />}>
+              <Link to={`/dashboard/edit/${contact.id}`}>Edit</Link>
+            </Menu.Item>
+            <Menu.Item color="red" icon={<FaTrash />}>
+              <div
+                onClick={async () => {
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      await deleteContact({
+                        token: auth.token,
+                        id: contact.id,
+                      });
+                      Swal.fire(
+                        "Deleted!",
+                        "Your file has been deleted.",
+                        "success"
+                      );
+                    }
+                  });
+                }}
+              >
+                Delete
+              </div>
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </td>
     </tr>
   ));
@@ -135,7 +165,7 @@ const Index = () => {
             type="submit"
             className=" bg-teal-500 hover:bg-teal-600 transition-colors mt-4"
           >
-            Settings
+            Save
           </Button>
         </form>
       </Modal>
@@ -148,18 +178,18 @@ const Index = () => {
         </button>
       </div>
       <div className="w-full overflow-x-scroll">
-      <Table >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Address</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
+        <Table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
       </div>
       {isLoading && <Skeleton className="w-full" height={37} count={7} />}
     </div>

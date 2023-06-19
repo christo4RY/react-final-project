@@ -7,6 +7,7 @@ import Dashboard from "../pages/Dashboard";
 import RouteGuard from "../components/RouteGuard";
 import Index from "../pages/Contacts/Index";
 import Show from "../pages/Contacts/Show";
+import Edit from "../pages/Contacts/Edit";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -21,6 +22,7 @@ export const router = createBrowserRouter(
             </RouteGuard>}>
                 <Route index element={<Index/>}/>
                 <Route path="contact/:id" element={<Show/>}/>
+                <Route path="edit/:id" element={<Edit/>}/>
             </Route>
         </Route>
     )
