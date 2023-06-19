@@ -1,16 +1,20 @@
-import { Button, TextInput } from "@mantine/core";
-import React, { useEffect } from "react";
+import { Button, Loader, TextInput } from "@mantine/core";
+import React, { useEffect, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdAlternateEmail } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InputError from "../../components/errors/InputError";
 import { CiLocationOn } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuth } from "../../store/slices/authSlice";
-import { useGetContactQuery } from "../../store/api/contact";
+import {
+  useGetContactQuery,
+  useUpdateContactMutation,
+} from "../../store/api/contact";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 const schema = yup
   .object({
@@ -23,6 +27,7 @@ const schema = yup
 
 const Edit = () => {
   const { id } = useParams();
+  const [updateContact, { isLoading: load }] = useUpdateContactMutation();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAuth());
@@ -32,10 +37,11 @@ const Edit = () => {
     token: auth.token,
     id,
   });
-
+  const nav = useNavigate();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -46,10 +52,34 @@ const Edit = () => {
       address: data?.contact.address,
     },
   });
-  console.log(data?.contact);
-  const submit = (data) => {
-    alert('coming')
-  } 
+
+  useEffect(() => {
+    reset({
+      name: data?.contact.name,
+      phone: data?.contact.phone,
+      email: data?.contact.email,
+      address: data?.contact.address,
+    });
+  }, [data]);
+  const submit = async (req) => {
+    const { data } = await updateContact({ token: auth.token, id, data: req });
+    data?.success && nav("/dashboard");
+  };
+  if (isLoading) {
+    return (
+      <div className="w-[90%] sm:w-[60%] md:w-[40%] mx-auto my-7 p-7 shadow-lg">
+        <SkeletonTheme baseColor="#e2e8f0" highlightColor="#a3ffc6">
+          <Skeleton height={43} className=" mb-4" />
+          <Skeleton height={40} />
+          <Skeleton height={40} />
+          <Skeleton height={40} />
+          <Skeleton height={40} />
+          <Skeleton height={40} />
+        </SkeletonTheme>
+      </div>
+    );
+  }
+
   return (
     <div className="w-[90%] sm:w-[60%] md:w-[40%] mx-auto my-7 p-7 shadow-lg">
       <h1 className="text-teal-500 text-2xl font-bold uppercase mb-3">
@@ -88,12 +118,22 @@ const Edit = () => {
           icon={<CiLocationOn size="0.8rem" />}
         />
         <InputError message={errors.address?.message} />
-        <Button
-          type="submit"
-          className=" bg-teal-500 hover:bg-teal-600 transition-colors mt-4"
-        >
-          Update
-        </Button>
+        {load && (
+          <Loader
+            size="sm"
+            className=" mx-auto text-teal-500 transition-colors mt-4"
+            variant="bars"
+          />
+        )}
+        {!load && (
+          <Button
+            type="submit"
+            disabled={load && true}
+            className=" bg-teal-500 hover:bg-teal-600 transition-colors mt-4"
+          >
+            Update
+          </Button>
+        )}
       </form>
     </div>
   );
