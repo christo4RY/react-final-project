@@ -61,8 +61,11 @@ const Edit = () => {
       address: data?.contact.address,
     });
   }, [data]);
+  const [error,setError] = useState("")
   const submit = async (req) => {
-    const { data } = await updateContact({ token: auth.token, id, data: req });
+    const {data ,error} = await updateContact({ token: auth.token, id, data: req });
+    setError(error?.data.message)
+    
     data?.success && nav("/dashboard");
   };
   if (isLoading) {
@@ -109,7 +112,7 @@ const Edit = () => {
           placeholder="example@gmail.com"
           icon={<MdAlternateEmail size="0.8rem" />}
         />
-        <InputError message={errors.email?.message} />
+        <InputError message={errors.email?.message ?? error} />
         <TextInput
           {...register("address")}
           className="mt-3"
